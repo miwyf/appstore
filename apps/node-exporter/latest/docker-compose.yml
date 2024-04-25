@@ -1,0 +1,14 @@
+version: "3"
+services:
+  alist:
+    container_name: ${CONTAINER_NAME}
+    restart: unless-stopped
+    command:
+      - "--path.rootfs=/host"
+    network_mode: host
+    pid: host
+    volumes:
+      - "/:/host:ro,rslave"
+    image: quay.io/prometheus/node-exporter:latest
+    labels:  
+      createdBy: "Apps"

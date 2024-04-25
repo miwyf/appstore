@@ -1,0 +1,20 @@
+name: blackbox
+tags:
+    - 工具
+title: blackbox-exporter是Prometheus官方提供的一个黑盒监控解决方案
+type: 工具
+description: blackbox-exporter是Prometheus官方提供的一个黑盒监控解决方案
+additionalProperties:
+    key: blackbox
+    name: blackbox
+    tags:
+        - Tool
+    shortDescZh: Blackbox Exporter是Prometheus社区提供的官方黑盒监控解决方案，其允许用户通过：HTTP、HTTPS、DNS、TCP以及ICMP 的方式对网络进行探测。
+    shortDescEn: The blackbox exporter allows blackbox probing of endpoints over HTTP, HTTPS, DNS, TCP, ICMP and gRPC.
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://prometheus.io/
+    github: https://github.com/prometheus/blackbox_exporter
+    document: https://github.com/prometheus/blackbox_exporter

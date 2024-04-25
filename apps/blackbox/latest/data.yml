@@ -1,0 +1,17 @@
+additionalProperties:
+    formFields:
+        - default: 9115
+          edit: true
+          envKey: PANEL_APP_PORT_HTTP
+          labelEn: Port
+          labelZh: 端口
+          required: true
+          rule: paramPort
+          type: number
+        - default: ./data/config
+          edit: true
+          envKey: CFG_PATH
+          labelEn: Config folder path
+          labelZh: 配置文件夹路径
+          required: true
+          type: text

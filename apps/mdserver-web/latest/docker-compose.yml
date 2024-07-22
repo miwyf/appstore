@@ -1,24 +1,19 @@
-version: "3.3"
 services:
-  mw-server:
+  mdserver-web:
+    image: "ddsderek/mdserver-web:latest"
     container_name: ${CONTAINER_NAME}
     restart: always
-    networks:
-      - 1panel-network
-    privileged: true
-    ports:
-        - "${Web_Panel_Port}:7200"
-        - "${HTTP_PORT}:80"
-        - "${HTTPS_PORT}:443"
-        - "${phpMyAdmin_PORT}:888"
+    network_mode: "host"
     volumes:
-        - mw-server:/www
-    image: "ddsderek/mw:latest"
+        - mdserver-web-data:/www
+    environment:
+      - CLOSE_ADMIN_PATH=${CLOSE_ADMIN_PATH}
+      - USERNAME=${USERNAME}
+      - PASSWORD=${PASSWORD}
+      - WEB_PORT=${PANEL_APP_PORT_HTTP}
     labels:  
       createdBy: "Apps"
-volumes:
-  mw-server:
-networks:  
-  1panel-network:  
-    external: true
 
+volumes:
+  mdserver-web-data:
+    name: mdserver-web-data

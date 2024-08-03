@@ -1,15 +1,12 @@
 services:
-  grafana:
+  element-web:
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - 1panel-network
     ports:
-      - "${PANEL_APP_PORT_HTTP}:3000"
-    volumes:
-      - ./data:/var/lib/grafana
-    user: '0'
-    image: grafana/grafana:11.1.1
+      - "${PANEL_APP_PORT_HTTP}:80"
+    image: vectorim/element-web:v1.11.72
     labels:  
       createdBy: "Apps"
 

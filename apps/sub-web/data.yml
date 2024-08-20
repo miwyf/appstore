@@ -1,0 +1,19 @@
+name: sub-web
+tags:
+    - 工具
+title: 基于 vue-cli 与 tindy2013/subconverter 后端实现的配置自动生成。
+description: 基于 vue-cli 与 tindy2013/subconverter 后端实现的配置自动生成。
+additionalProperties:
+    key: sub-web
+    name: sub-web
+    tags:
+        - Tool
+    shortDescZh: 基于 vue-cli 与 tindy2013/subconverter 后端实现的配置自动生成。
+    shortDescEn: 基于 vue-cli 与 tindy2013/subconverter 后端实现的配置自动生成。
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://github.com/CareyWang/sub-web
+    github: https://github.com/CareyWang/sub-web
+    document: https://github.com/CareyWang/sub-web

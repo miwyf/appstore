@@ -8,10 +8,13 @@ services:
     networks:
       - 1panel-network
     environment:
-      DATABASE_HOST: ${PANEL_DB_HOST}:${PANEL_DB_PORT}
-      MYSQL_DATABASE: ${PANEL_DB_NAME}
-      MYSQL_USER: ${PANEL_DB_USER}
-      MYSQL_PASSWORD: ${PANEL_DB_USER_PASSWORD}
+      IMPORT_DEFAULT_SCENARIO_FOR_ALL_USERS: false
+      DATABASE_HOST: ${PANEL_DB_HOST}
+      DATABASE_PORT: ${PANEL_DB_PORT}
+      DATABASE_NAME: ${PANEL_DB_NAME}
+      DATABASE_USERNAME: ${PANEL_DB_USER}
+      DATABASE_PASSWORD: ${PANEL_DB_USER_PASSWORD}
+      DATABASE_ENCODING: utf8mb4
     labels:
       createdBy: "Apps"
 networks:

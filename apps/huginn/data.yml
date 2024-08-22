@@ -13,7 +13,7 @@ additionalProperties:
     type: tool
     crossVersionUpdate: true
     limit: 0
-    recommend: 5
+    recommend: 0
     website: https://github.com/huginn/huginn
     github: https://github.com/huginn/huginn
     document: https://github.com/huginn/huginn

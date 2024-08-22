@@ -1,5 +1,5 @@
 services:
-  wordpress:
+  huginn:
     image: ghcr.io/huginn/huginn:latest
     container_name: ${CONTAINER_NAME}
     ports:
@@ -8,10 +8,10 @@ services:
     networks:
       - 1panel-network
     environment:
-      WORDPRESS_DB_HOST: ${PANEL_DB_HOST}:${PANEL_DB_PORT}
-      HUGINN_DATABASE_NAME: ${PANEL_DB_NAME}
-      HUGINN_DATABASE_USERNAME: ${PANEL_DB_USER}
-      HUGINN_DATABASE_PASSWORD: ${PANEL_DB_USER_PASSWORD}
+      DATABASE_HOST: ${PANEL_DB_HOST}:${PANEL_DB_PORT}
+      MYSQL_DATABASE: ${PANEL_DB_NAME}
+      MYSQL_USER: ${PANEL_DB_USER}
+      MYSQL_PASSWORD: ${PANEL_DB_USER_PASSWORD}
     labels:
       createdBy: "Apps"
 networks:

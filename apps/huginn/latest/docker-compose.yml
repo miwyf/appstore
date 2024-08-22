@@ -1,0 +1,19 @@
+services:
+  wordpress:
+    image: ghcr.io/huginn/huginn:latest
+    container_name: ${CONTAINER_NAME}
+    ports:
+      -  ${PANEL_APP_PORT_HTTP}:3000
+    restart: always
+    networks:
+      - 1panel-network
+    environment:
+      WORDPRESS_DB_HOST: ${PANEL_DB_HOST}:${PANEL_DB_PORT}
+      HUGINN_DATABASE_NAME: ${PANEL_DB_NAME}
+      HUGINN_DATABASE_USERNAME: ${PANEL_DB_USER}
+      HUGINN_DATABASE_PASSWORD: ${PANEL_DB_USER_PASSWORD}
+    labels:
+      createdBy: "Apps"
+networks:
+  1panel-network:
+    external: true

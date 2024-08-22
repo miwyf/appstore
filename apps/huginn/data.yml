@@ -1,0 +1,19 @@
+name: Huginn
+tags:
+    - 实用工具
+title: Huginn is a system for building agents that perform automated tasks for you online.
+description: Huginn is a system for building agents that perform automated tasks for you online.
+additionalProperties:
+    key: huginn
+    name: Huginn
+    tags:
+        - Tool
+    shortDescZh: Huginn是一个神器，它是一个私人IFTTT，例如搭建任务采集触发平台，自动跟进实时提醒（用Email Slack Telegeram QQ 微信接收推送），全文 RSS 输出（把你关注的所有网页进行 RSS 全文输出），同时可以把各种app，软件，网络服务，网络设备等链接在一起做任务触发。
+    shortDescEn: Huginn is a system for building agents that perform automated tasks for you online.
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 5
+    website: https://github.com/huginn/huginn
+    github: https://github.com/huginn/huginn
+    document: https://github.com/huginn/huginn

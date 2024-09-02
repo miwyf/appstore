@@ -1,0 +1,30 @@
+additionalProperties:
+    formFields:
+        - default: ./data
+          edit: true
+          envKey: DATA_PATH
+          labelEn: Data folder path
+          labelZh: 数据文件夹路径
+          required: true
+          type: text
+        - default: 35050
+          envKey: PANEL_APP_PORT_HTTP
+          labelEn: Port
+          labelZh: 应用端口
+          required: true
+          rule: paramPort
+          type: number
+        - default: 31883
+          envKey: PANEL_APP_PORT_MQTT
+          labelEn: Port
+          labelZh: 应用端口
+          required: true
+          rule: paramPort
+          type: number
+        - default: Asia/Shanghai
+          edit: true
+          envKey: PANEL_APP_TZ
+          labelEn: Time Zone
+          labelZh: 时区
+          required: true
+          type: text

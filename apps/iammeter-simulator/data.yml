@@ -1,0 +1,19 @@
+name: IAMMETER-Simulator
+tags:
+    - 实用工具
+title: IAMMETER Electricity Meter and Solar Photovoltaic Simulator.
+description: IAMMETER Electricity Meter and Solar Photovoltaic Simulator.
+additionalProperties:
+    key: iammeter-simulator
+    name: IAMMETER-Simulator
+    tags:
+        - Middleware
+    shortDescZh: IAMMETER电表及太阳能光伏模拟器。
+    shortDescEn: IAMMETER Electricity Meter and Solar Photovoltaic Simulator.
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://www.iammeter.com/
+    github: https://hub.docker.com/r/iammeter/iammeter-simulator
+    document: https://hub.docker.com/r/iammeter/iammeter-simulator

@@ -1,0 +1,19 @@
+name: IAMMETER
+tags:
+    - 实用工具
+title: IAMMETER Docker is an open source energy monitoring system.
+description: IAMMETER Docker is an open source energy monitoring system.
+additionalProperties:
+    key: iammeter
+    name: IAMMETER
+    tags:
+        - Middleware
+    shortDescZh: IAMMETER Docker 是一个开源能源监控系统。
+    shortDescEn: IAMMETER Docker is an open source energy monitoring system.
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://www.iammeter.com/
+    github: https://github.com/lewei50/iammeter-docker
+    document: https://www.iammeter.com/docs/docker

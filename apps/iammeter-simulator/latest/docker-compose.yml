@@ -1,0 +1,18 @@
+services:
+  huginn:
+    image: iammeter/iammeter-simulator:latest
+    container_name: ${CONTAINER_NAME}
+    ports:
+      -  ${PANEL_APP_PORT_HTTP}:8080
+    volumes:
+      - "${DATA_PATH}:/app/data"
+    restart: always
+    networks:
+      - 1panel-network
+    environment:
+      TZ: ${PANEL_APP_TZ}
+    labels:
+      createdBy: "Apps"
+networks:
+  1panel-network:
+    external: true

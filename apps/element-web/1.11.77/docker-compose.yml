@@ -1,14 +1,12 @@
 services:
-  linkding:
+  element-web:
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - 1panel-network
     ports:
-      - "${PANEL_APP_PORT_HTTP}:9090"
-    volumes:
-      - "${DATA_PATH}:/etc/linkding/data"
-    image: sissbruecker/linkding:1.31.1
+      - "${PANEL_APP_PORT_HTTP}:80"
+    image: vectorim/element-web:v1.11.77
     labels:  
       createdBy: "Apps"
 

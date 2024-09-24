@@ -1,0 +1,19 @@
+name: Node-RED
+tags:
+    - 实用工具
+title: Low-code programming for event-driven applications.
+description: Low-code programming for event-driven applications.
+additionalProperties:
+    key: node-red
+    name: Node-RED
+    tags:
+        - Tool
+    shortDescZh: Low-code programming for event-driven applications.
+    shortDescEn: Low-code programming for event-driven applications.
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://nodered.org/
+    github: https://github.com//node-red/node-red-docker
+    document: https://nodered.org/docs/getting-started/docker

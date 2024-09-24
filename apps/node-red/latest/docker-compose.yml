@@ -1,0 +1,12 @@
+services:
+  nodered:
+    image: nodered/node-red
+    container_name: ${CONTAINER_NAME}
+    network_mode: "host"
+    volumes:
+      - "${DATA_PATH}:/data"
+    restart: always
+    environment:
+      TZ: ${TIME_ZONE}
+    labels:
+      createdBy: "Apps"

@@ -1,14 +1,14 @@
 services:
-  certimate:
-    image: "usual2970/certimate:v0.1.19"
+  easynode:
+    image: "chaoszhu/easynode:v2.2.6"
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - 1panel-network
     ports:
-      - "${PANEL_APP_PORT_HTTP}:8090"
+      - "${PANEL_APP_PORT_HTTP}:8082"
     volumes:
-      - "${DATA_PATH}:/app/pb_data"
+      - ${DATA_PATH}:/easynode/app/db
     labels:
       createdBy: "Apps"
 

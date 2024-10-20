@@ -12,6 +12,7 @@ services:
     - ${SAFELINE_DIR}/resources/mgt:/app/data
     - ${SAFELINE_DIR}/logs/nginx:/app/log/nginx:z
     - ${SAFELINE_DIR}/resources/sock:/app/sock
+    - /var/run:/app/run
     ports:
     - ${PANEL_APP_PORT_HTTP:-9443}:1443
     healthcheck:
@@ -104,33 +105,6 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
-    labels:
-      createdBy: Apps
-
-  safeline-bridge:
-    container_name: ${CONTAINER_NAME}-bridge
-    restart: always
-    networks:
-      1panel-network:
-      safeline-ce:
-        ipv4_address: ${SUBNET_PREFIX}.9
-    image: chaitin/safeline-bridge:latest
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run:/app/run
-    command:
-      - /app/bridge
-      - serve
-      - -n
-      - unix
-      - -a
-      - /app/run/safeline.sock
-    logging:
-      options:
-        max-size: "100m"
-        max-file: "5"
-    depends_on:
-      - safeline-mgt
     labels:
       createdBy: Apps
 

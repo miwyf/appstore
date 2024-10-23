@@ -1,16 +1,15 @@
 services:
-  onedev:
+  cloudbeaver:
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - 1panel-network
     ports:
-      - "${PANEL_APP_PORT_HTTP}:6610"
-      - "${SSH_PORT}:6611"
+      - "${PANEL_APP_PORT_HTTP}:8978"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "${DATA_PATH}:/opt/onedev"
-    image: 1dev/server:11.3.2
+      - "${DATA_PATH}:/opt/cloudbeaver/workspace"
+    tty: true
+    image: dbeaver/cloudbeaver:24.2.3
     labels:  
       createdBy: "Apps"
 

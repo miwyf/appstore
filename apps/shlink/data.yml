@@ -1,0 +1,20 @@
+name: Shlink
+tags:
+    - 工具
+title: 自托管URL缩短器
+type: 工具
+description: 自托管URL缩短器
+additionalProperties:
+    key: shlink
+    name: Shlink
+    tags:
+        - Tool
+    shortDescZh: 自托管URL缩短器
+    shortDescEn: The definitive self-hosted URL shortener
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://shlink.io/
+    github: https://github.com/shlinkio/shlink
+    document: https://shlink.io/documentation/

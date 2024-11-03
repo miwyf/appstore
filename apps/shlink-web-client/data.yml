@@ -1,0 +1,20 @@
+name: Shlink Web Client
+tags:
+    - 工具
+title: 自托管URL缩短器的web客户端
+type: 工具
+description: 自托管URL缩短器的web客户端
+additionalProperties:
+    key: shlink-web-client
+    name: Shlink Web Client
+    tags:
+        - Tool
+    shortDescZh: 自托管URL缩短器的web客户端
+    shortDescEn: A ReactJS-based progressive web application for Shlink.
+    type: tool
+    crossVersionUpdate: true
+    limit: 0
+    recommend: 0
+    website: https://shlink.io/
+    github: https://github.com/shlinkio/shlink-web-client
+    document: https://shlink.io/documentation/shlink-web-client/

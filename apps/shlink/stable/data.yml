@@ -1,0 +1,92 @@
+additionalProperties:
+    formFields:
+        - child:
+            default: ""
+            envKey: PANEL_DB_HOST
+            labelEn: Database Service
+            labelZh: 数据库服务
+            required: true
+            type: service
+          default: mysql
+          labelEn: Database Service
+          labelZh: 数据库服务
+          params:
+            - envKey: PANEL_DB_DRIVER
+              key: mysql
+              type: param
+              value: "mysql"
+            - envKey: PANEL_DB_DRIVER
+              key: mariadb
+              type: param
+              value: "maria"
+            - envKey: PANEL_DB_DRIVER
+              key: postgresql
+              type: param
+              value: "postgres"
+          required: true
+          type: apps
+          values:
+            - label: MySQL
+              value: mysql
+            - label: MariaDB
+              value: mariadb
+            - label: PostgreSQL
+              value: postgresql
+        - default: shlink
+          envKey: PANEL_DB_NAME
+          labelEn: Database
+          labelZh: 数据库名
+          random: true
+          required: true
+          rule: paramCommon
+          type: text
+        - default: shlink
+          envKey: PANEL_DB_USER
+          labelEn: User
+          labelZh: 数据库用户
+          random: true
+          required: true
+          rule: paramCommon
+          type: text
+        - default: shlink
+          envKey: PANEL_DB_USER_PASSWORD
+          labelEn: Password
+          labelZh: 数据库用户密码
+          random: true
+          required: true
+          rule: paramComplexity
+          type: password
+        - default: "true"
+          edit: true
+          envKey: IS_HTTPS_ENABLED
+          labelEn: https
+          labelZh: https
+          required: true
+          type: select
+          values:
+            - label: 启用
+              value: "true"
+            - label: 关闭
+              value: "false"
+        - default: kjh23ljkbndskj345
+          edit: true
+          envKey: GEOLITE_LICENSE_KEY
+          labelEn: GEOLITE_LICENSE_KEY
+          labelZh: GEOLITE 密钥
+          required: true
+          type: password
+        - default: s.test
+          edit: true
+          envKey: SHLINK_EXTERNAL_URL
+          labelEn: External URL
+          labelZh: 外部访问地址
+          required: true
+          type: text
+        - default: 40061
+          edit: true
+          envKey: PANEL_APP_PORT_HTTP
+          labelEn: Port
+          labelZh: 端口
+          required: true
+          rule: paramPort
+          type: number

@@ -1,6 +1,6 @@
 services:
-  bitwarden:
-    image: "vaultwarden/server:latest"
+  cashbook:
+    image: "dingdangdog/cashbook:3.0.4"
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
@@ -8,14 +8,15 @@ services:
     ports:
       - "${PANEL_APP_PORT_HTTP}:80"
     volumes:
-      - "${DATA_PATH}:/data"
+      - ${DATA_PATH}:/app/resources/data
     environment:
-      - SIGNUPS_ALLOWED=${SIGNUPS_ALLOWED}
-      - INVITATIONS_ALLOWED=${INVITATIONS_ALLOWED}
-      - WEBSOCKET_ENABLED=${WEBSOCKET_ENABLED}
-      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - TOKEN_SALT=${TOKEN_SALT}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - SERVER_KEY=${SERVER_KEY}
+      - DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
     labels:
       createdBy: "Apps"
+
 networks:
   1panel-network:
     external: true

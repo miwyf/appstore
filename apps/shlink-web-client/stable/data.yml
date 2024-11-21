@@ -1,19 +1,5 @@
 additionalProperties:
     formFields:
-        - default: kjh23ljkbndskj345
-          edit: true
-          envKey: SHLINK_SERVER_API_KEY
-          labelEn: SHLINK SERVER API KEY
-          labelZh: SHLINK SERVER API KEY
-          required: true
-          type: password
-        - default: https://s.test
-          edit: true
-          envKey: SHLINK_SERVER_URL
-          labelEn: SHLINK SERVER URL
-          labelZh: SHLINK服务器地址
-          required: true
-          type: text
         - default: 40062
           edit: true
           envKey: PANEL_APP_PORT_HTTP
@@ -22,3 +8,10 @@ additionalProperties:
           required: true
           rule: paramPort
           type: number
+        - default: ./data
+          edit: true
+          envKey: DATA_PATH
+          labelEn: Data Directory
+          labelZh: 数据目录
+          required: true
+          type: text

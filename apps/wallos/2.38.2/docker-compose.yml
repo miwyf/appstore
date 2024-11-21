@@ -1,16 +1,17 @@
 services:
-  siyuan:
+  wallos:
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - 1panel-network
     ports:
-      - "${PANEL_APP_PORT_HTTP}:6806"
+      - "${PANEL_APP_PORT_HTTP}:80"
     volumes:
-      - "${DATA_PATH}:/siyuan/workspace"
-    user: "1000:1000"
-    command: "--workspace=/siyuan/workspace/"
-    image: b3log/siyuan:v3.1.12
+      - ./data/db:/var/www/html/db
+      - ./data/logos:/var/www/html/images/uploads/logos
+    environment:
+      - TZ=${TIME_ZONE}
+    image: bellamy/wallos:2.38.2
     labels:  
       createdBy: "Apps"
 

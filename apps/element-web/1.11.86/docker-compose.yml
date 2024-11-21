@@ -1,17 +1,12 @@
 services:
-  wallos:
+  element-web:
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
       - 1panel-network
     ports:
       - "${PANEL_APP_PORT_HTTP}:80"
-    volumes:
-      - ./data/db:/var/www/html/db
-      - ./data/logos:/var/www/html/images/uploads/logos
-    environment:
-      - TZ=${TIME_ZONE}
-    image: bellamy/wallos:2.36.2
+    image: vectorim/element-web:v1.11.86
     labels:  
       createdBy: "Apps"
 

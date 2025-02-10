@@ -1,0 +1,19 @@
+name: subconverterx
+tags:
+  - 工具
+title: 在各种订阅格式之间进行转换的实用程序
+description: 在各种订阅格式之间进行转换的实用程序
+additionalProperties:
+  key: subconverterx
+  name: subconverterx
+  tags:
+    - Tool
+  shortDescZh: 在各种订阅格式之间进行转换的实用程序
+  shortDescEn: Utility to convert between various proxy subscription formats
+  type: tool
+  crossVersionUpdate: true
+  limit: 0
+  recommend: 0
+  website: https://github.com/MetaCubeX/subconverter
+  github: https://github.com/MetaCubeX/subconverter
+  document: https://github.com/MetaCubeX/subconverter

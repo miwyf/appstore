@@ -1,0 +1,19 @@
+name: SubLinkE
+tags:
+  - 工具
+title: 节点转换成订阅
+description: 节点转换成订阅
+additionalProperties:
+  key: sublinke
+  name: SubLinkE
+  tags:
+    - Tool
+  shortDescZh: 节点转换成订阅
+  shortDescEn: Convert node links into subscription
+  type: tool
+  crossVersionUpdate: true
+  limit: 0
+  recommend: 0
+  website: https://github.com/eun1e/sublinkE
+  github: https://github.com/eun1e/sublinkE
+  document: https://github.com/eun1e/sublinkE

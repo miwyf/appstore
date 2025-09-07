@@ -1,0 +1,19 @@
+name: SubLinkX
+tags:
+  - 工具
+title: 节点转换成订阅
+description: 节点转换成订阅
+additionalProperties:
+  key: sublinkx
+  name: SubLinkX
+  tags:
+    - Tool
+  shortDescZh: 节点转换成订阅
+  shortDescEn: Convert node links into subscription
+  type: tool
+  crossVersionUpdate: true
+  limit: 0
+  recommend: 0
+  website: https://github.com/gooaclok819/sublinkX
+  github: https://github.com/gooaclok819/sublinkX
+  document: https://github.com/gooaclok819/sublinkX

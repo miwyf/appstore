@@ -1,0 +1,17 @@
+services:
+  mynodequery:
+    container_name: ${CONTAINER_NAME}
+    restart: always
+    networks:
+      - 1panel-network
+    ports:
+      - "${PANEL_APP_PORT_HTTP}:25774"
+    volumes:
+      - ./data:/app/data
+    image: ghcr.io/komari-monitor/komari:latest
+    labels:  
+      createdBy: "Apps"
+
+networks:  
+  1panel-network:  
+    external: true

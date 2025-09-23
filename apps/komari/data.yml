@@ -1,0 +1,19 @@
+name: Komari
+tags:
+  - 工具
+title: 一款轻量级的探针
+description: 服务器监控工具
+additionalProperties:
+  key: komari
+  name: Komari
+  tags:
+    - Tool
+  shortDescZh: Komari 是一款轻量级的自托管服务器监控工具，旨在提供简单、高效的服务器性能监控解决方案。它支持通过 Web 界面查看服务器状态，并通过轻量级 Agent 收集数据。
+  shortDescEn: Komari is a lightweight self-hosted server monitoring tool designed to provide a simple and efficient solution for server performance monitoring. It supports viewing server status through a web interface and collecting data via a lightweight agent.
+  type: tool
+  crossVersionUpdate: true
+  limit: 0
+  recommend: 0
+  website: https://ss.akz.moe/
+  github: https://github.com/komari-monitor/komari
+  document: https://github.com/komari-monitor/komari

@@ -1,0 +1,173 @@
+name: Renovate automerge for whitelisted apps
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - localApps
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to re-check and merge if eligible
+        required: true
+        type: string
+
+concurrency:
+  group: renovate-automerge-${{ github.workflow }}-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: >
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.state == 'open' &&
+        (
+          github.event.pull_request.user.login == 'app/renovate' ||
+          github.event.pull_request.user.login == 'renovate[bot]'
+        )
+      ) || (
+        github.event_name == 'workflow_dispatch'
+      )
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Verify changed files stay within whitelist
+        id: whitelist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+          REPO="${{ github.repository }}"
+
+          mapfile -t apps < <(sed '/^\s*#/d;/^\s*$/d' .github/renovate-automerge-whitelist.txt)
+          mapfile -t files < <(gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename')
+
+          if [ ${#apps[@]} -eq 0 ] || [ ${#files[@]} -eq 0 ]; then
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          allowed=true
+          printf 'Whitelisted apps:\n'
+          printf -- '- %s\n' "${apps[@]}"
+          printf 'Changed files:\n'
+
+          for file in "${files[@]}"; do
+            echo "- $file"
+
+
+            if [[ "$file" =~ ^apps/([^/]+)/ ]]; then
+              app_name="${BASH_REMATCH[1]}"
+              matched=false
+              for allowed_app in "${apps[@]}"; do
+                if [[ "$app_name" == "$allowed_app" ]]; then
+                  matched=true
+                  break
+                fi
+              done
+              if [[ "$matched" == false ]]; then
+                allowed=false
+              fi
+            else
+              allowed=false
+            fi
+          done
+
+          echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
+
+      - name: Add marker label for eligible PR
+        if: steps.whitelist.outputs.allowed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+          gh pr edit "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --add-label renovate-auto
+
+      - name: Check commits for app-version update marker
+        id: marker
+        if: steps.whitelist.outputs.allowed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+          REPO="${{ github.repository }}"
+
+          found=false
+          for attempt in 1 2 3 4 5; do
+            PULL_COMMITS=$(gh api repos/$REPO/pulls/$PR_NUMBER/commits --paginate --jq '.[].commit.message' || true)
+            BASE_SHA=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json baseRefOid --jq '.baseRefOid' || true)
+            HEAD_SHA=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefOid --jq '.headRefOid' || true)
+            COMPARE_COMMITS=""
+            if [ -n "$BASE_SHA" ] && [ -n "$HEAD_SHA" ]; then
+              COMPARE_COMMITS=$(gh api repos/$REPO/compare/$BASE_SHA...$HEAD_SHA --jq '.commits[].commit.message' || true)
+            fi
+
+            echo "== attempt $attempt pull commits =="
+            echo "$PULL_COMMITS"
+            echo "== attempt $attempt compare commits =="
+            echo "$COMPARE_COMMITS"
+
+            ALL_COMMITS="$(printf '%s\n%s\n' "$PULL_COMMITS" "$COMPARE_COMMITS")"
+
+            if echo "$ALL_COMMITS" | grep -Fq "Update app version [skip ci]"; then
+              found=true
+              break
+            fi
+
+            if [ "$attempt" -lt 5 ]; then
+              sleep 5
+            fi
+          done
+
+          echo "found=$found" >> "$GITHUB_OUTPUT"
+
+      - name: Merge PR
+        if: steps.whitelist.outputs.allowed == 'true' && steps.marker.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+          REPO="${{ github.repository }}"
+
+          for attempt in 1 2 3 4 5; do
+            echo "== merge attempt $attempt =="
+
+            set +e
+            MERGE_OUTPUT=$(gh pr merge "$PR_NUMBER" \
+              --repo "$REPO" \
+              --merge \
+              --delete-branch=false 2>&1)
+            MERGE_EXIT=$?
+            set -e
+
+            echo "$MERGE_OUTPUT"
+
+            if [ "$MERGE_EXIT" -eq 0 ]; then
+              exit 0
+            fi
+
+            PR_STATE=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json state,mergedAt --jq 'if .mergedAt then "MERGED" else .state end' 2>/dev/null || true)
+            if [ "$PR_STATE" = "MERGED" ] || [ "$PR_STATE" = "CLOSED" ]; then
+              echo "PR already resolved with state: $PR_STATE"
+              exit 0
+            fi
+
+            if echo "$MERGE_OUTPUT" | grep -Fq "Base branch was modified"; then
+              if [ "$attempt" -lt 5 ]; then
+                sleep $((attempt * 5))
+                continue
+              fi
+            fi
+
+            exit "$MERGE_EXIT"
+          done

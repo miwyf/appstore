@@ -1,0 +1,32 @@
+name: ESPHome
+tags:
+- Tool
+title: 简单强大的 ESP8266/ESP32 配置与固件编译工具。
+description: 简单强大的 ESP8266/ESP32 配置与固件编译工具。
+additionalProperties:
+  key: esphome
+  name: ESPHome
+  tags:
+  - Tool
+  type: tool
+  website: https://esphome.io/
+  document: https://esphome.io/guides/getting_started_command_line/
+  github: https://github.com/esphome/esphome
+  shortDescZh: 简单强大的 ESP8266/ESP32 配置与固件编译工具。
+  shortDescEn: ESPHome is a system to control your ESP8266/ESP32 by simple yet powerful
+    configuration files.
+  crossVersionUpdate: true
+  limit: 0
+  architectures:
+  - amd64
+  - arm64
+  description:
+    en: ESPHome is a system to control your ESP8266/ESP32 by simple yet powerful configuration
+      files.
+    zh: 简单强大的 ESP8266/ESP32 配置与固件编译工具。
+    zh-Hant: 使用簡單而強大的設定檔控制 ESP8266/ESP32 裝置。
+    ja: シンプルで強力な設定ファイルで ESP8266/ESP32 デバイスを制御します。
+    ko: 간단하면서도 강력한 설정 파일로 ESP8266/ESP32 장치를 제어합니다.
+    ru: Управляйте устройствами ESP8266/ESP32 с помощью простых и мощных файлов конфигурации.
+    ms: Kawal peranti ESP8266/ESP32 dengan fail konfigurasi yang ringkas tetapi berkuasa.
+    pt-br: Controle dispositivos ESP8266/ESP32 com arquivos de configuração simples e poderosos.

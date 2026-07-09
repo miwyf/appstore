@@ -1,8 +1,7 @@
 name: Reconcile eligible Renovate PRs for automerge
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'
+  # Automatic reconciliation is temporarily disabled.
   workflow_dispatch:
 
 permissions:
@@ -19,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Find eligible Renovate PRs missing automerge label
         id: scan
         env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
           mapfile -t apps < <(sed '/^\s*#/d;/^\s*$/d' .github/renovate-automerge-whitelist.txt)
@@ -112,7 +111,7 @@ jobs:
       - name: Dispatch automerge workflow for eligible PRs
         if: steps.scan.outputs.pr_numbers != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
           while IFS= read -r pr_number; do

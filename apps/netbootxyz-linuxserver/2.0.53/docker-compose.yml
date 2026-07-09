@@ -1,0 +1,28 @@
+networks:
+  1panel-network:
+    external: true
+services:
+  netbootxyz:
+    image: "linuxserver/netbootxyz:2.0.53"
+    container_name: ${CONTAINER_NAME}
+    restart: always
+    networks:
+      - 1panel-network
+    ports:
+      - "${PANEL_APP_PORT_HTTP}:${WEB_APP_PORT}"
+      - "${PANEL_APP_PORT_TFTP}:69/udp"
+      - "${PANEL_APP_PORT_ASSETS}:${NGINX_PORT}"
+    volumes:
+      - "${CONFIG_PATH}:/config"
+      - "${ASSETS_PATH}:/assets"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TIME_ZONE}
+      - MENU_VERSION=${MENU_VERSION}
+      - PORT_RANGE=${PORT_RANGE:-30000:30010}
+      - SUBFOLDER=${SUBFOLDER}
+      - NGINX_PORT=${NGINX_PORT}
+      - WEB_APP_PORT=${WEB_APP_PORT}
+    labels:
+      createdBy: "Apps"

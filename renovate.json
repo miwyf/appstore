@@ -7,6 +7,9 @@
     "githubaction@githubaction.com"
   ],
   "rebaseWhen": "never",
+  "prHourlyLimit": 30,
+  "prConcurrentLimit": 80,
+  "branchConcurrentLimit": 120,
   "ignorePaths": [
     "apps/mysql-cluster/**",
     "apps/redis-cluster/**",
@@ -321,6 +324,172 @@
       "allowedVersions": "/^2.5.*/"
     },
     {
+      "description": "Keep Zabbix Server 6.4 historical tracks on 6.4 Alpine images",
+      "matchFileNames": [
+        "apps/zabbix-server/6.4.*/*.yml"
+      ],
+      "matchPackageNames": [
+        "zabbix/zabbix-server-mysql",
+        "zabbix/zabbix-web-nginx-mysql",
+        "zabbix/zabbix-java-gateway",
+        "zabbix/zabbix-snmptraps",
+        "zabbix/zabbix-server-pgsql",
+        "zabbix/zabbix-web-nginx-pgsql"
+      ],
+      "allowedVersions": "/^alpine-6\\.4\\..*/"
+    },
+    {
+      "description": "Keep Zabbix Server 7.4 tracks on 7.4 Alpine images",
+      "matchFileNames": [
+        "apps/zabbix-server/7.4.*/*.yml"
+      ],
+      "matchPackageNames": [
+        "zabbix/zabbix-server-mysql",
+        "zabbix/zabbix-web-nginx-mysql",
+        "zabbix/zabbix-java-gateway",
+        "zabbix/zabbix-snmptraps",
+        "zabbix/zabbix-server-pgsql",
+        "zabbix/zabbix-web-nginx-pgsql"
+      ],
+      "allowedVersions": "/^alpine-7\\.4\\..*/"
+    },
+    {
+      "description": "Keep bundled Zabbix MySQL on the 8.0 line",
+      "matchFileNames": [
+        "apps/zabbix-server/*&mysql/*.yml"
+      ],
+      "matchPackageNames": [
+        "mysql"
+      ],
+      "allowedVersions": "/^8\\.0\\..*/"
+    },
+    {
+      "description": "Keep bundled Teldrive PostgreSQL on the 17.x line until the 18.x upgrade path is validated",
+      "matchFileNames": [
+        "apps/teldrive/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/tgdrive/postgres"
+      ],
+      "allowedVersions": "/^17.*/"
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for ClearFlask multi-service tracks",
+      "matchFileNames": [
+        "apps/clearflask/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "axllent/mailpit",
+        "localstack/localstack",
+        "mariadb"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for Dify multi-service tracks",
+      "matchFileNames": [
+        "apps/dify/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "busybox",
+        "nginx",
+        "semitechnologies/weaviate",
+        "ubuntu/squid"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for Diskover multi-service tracks",
+      "matchFileNames": [
+        "apps/diskover-linuxserver/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "alpine",
+        "docker.elastic.co/elasticsearch/elasticsearch"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for Karakeep multi-service tracks",
+      "matchFileNames": [
+        "apps/karakeep/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "gcr.io/zenika-hub/alpine-chrome",
+        "getmeili/meilisearch"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for LibreChat multi-service tracks",
+      "matchFileNames": [
+        "apps/librechat/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "getmeili/meilisearch",
+        "mongo",
+        "pgvector/pgvector"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for Paopao CE multi-service tracks",
+      "matchFileNames": [
+        "apps/paopao-ce/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "getmeili/meilisearch",
+        "mysql",
+        "redis/redis-stack"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for Rocket.Chat multi-service tracks",
+      "matchFileNames": [
+        "apps/rocketchat/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "docker.io/mongodb/mongodb-community-server",
+        "docker.io/nats"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable sidecar-only Renovate updates for Teldrive multi-service tracks",
+      "matchFileNames": [
+        "apps/teldrive/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/tgdrive/postgres"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Require dashboard approval for major updates of stateful Docker sidecars",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "matchPackageNames": [
+        "docker.elastic.co/elasticsearch/elasticsearch",
+        "docker.elastic.co/kibana/kibana",
+        "docker.io/mongodb/mongodb-community-server",
+        "docker.io/nats",
+        "getmeili/meilisearch",
+        "ghcr.io/tgdrive/postgres",
+        "localstack/localstack",
+        "mariadb",
+        "mongo",
+        "pgvector/pgvector",
+        "redis/redis-stack",
+        "semitechnologies/weaviate"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
       "description": "Require dashboard approval for multi-service multi-image compose apps",
       "matchFileNames": [
         "apps/safeline/**/docker-compose.yml",
@@ -346,6 +515,21 @@
         "apps/alist/3.44.0/*.yml"
       ],
       "enabled": false
+    },
+    {
+      "description": "Keep NPS/NPC on the actively maintained 0.26 image line; upstream v0.27.01 is an older build",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "apps/nps/**/docker-compose.yml",
+        "apps/npc/**/docker-compose.yml"
+      ],
+      "matchPackageNames": [
+        "yisier1/nps",
+        "yisier1/npc"
+      ],
+      "allowedVersions": "/^v0\\.26\\..*/"
     }
   ],
   "prCreation": "immediate"

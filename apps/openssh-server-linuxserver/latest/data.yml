@@ -1,0 +1,180 @@
+additionalProperties:
+  formFields:
+  - default: 2222
+    edit: true
+    envKey: PANEL_APP_PORT_SSH
+    labelEn: SSH Port
+    labelZh: SSH 端口
+    label:
+      en: SSH Port
+      zh: SSH 端口
+      zh-Hant: SSH 連接埠
+      ja: SSH ポート
+      ko: SSH 포트
+      ru: Порт SSH
+      ms: Port SSH
+      pt-br: Porta SSH
+    required: true
+    type: number
+    rule: paramPort
+  - default: ./data/config
+    edit: true
+    envKey: CONFIG_PATH
+    labelEn: Config folder path
+    labelZh: 配置文件路径
+    label:
+      en: Config folder path
+      zh: 配置文件路径
+      zh-Hant: 設定檔資料夾路徑
+      ja: 設定フォルダーのパス
+      ko: 설정 폴더 경로
+      ru: Путь к папке конфигурации
+      ms: Laluan folder konfigurasi
+      pt-br: Caminho da pasta de configuração
+    required: true
+    type: text
+  - default: linuxserver.io
+    edit: true
+    envKey: USER_NAME
+    labelEn: SSH user name
+    labelZh: SSH 用户名
+    label:
+      en: SSH user name
+      zh: SSH 用户名
+      zh-Hant: SSH 使用者名稱
+      ja: SSH ユーザー名
+      ko: SSH 사용자 이름
+      ru: Имя пользователя SSH
+      ms: Nama pengguna SSH
+      pt-br: Nome de usuario SSH
+    required: true
+    type: text
+  - default: ''
+    edit: true
+    envKey: PUBLIC_KEY
+    labelEn: SSH public key
+    labelZh: SSH 公钥
+    label:
+      en: SSH public key
+      zh: SSH 公钥
+      zh-Hant: SSH 公鑰
+      ja: SSH 公開鍵
+      ko: SSH 공개 키
+      ru: Открытый ключ SSH
+      ms: Kunci awam SSH
+      pt-br: Chave publica SSH
+    required: false
+    type: text
+  - default: ''
+    edit: true
+    envKey: PUBLIC_KEY_URL
+    labelEn: SSH public key URL
+    labelZh: SSH 公钥 URL
+    label:
+      en: SSH public key URL
+      zh: SSH 公钥 URL
+      zh-Hant: SSH 公鑰 URL
+      ja: SSH 公開鍵 URL
+      ko: SSH 공개 키 URL
+      ru: URL открытого ключа SSH
+      ms: URL kunci awam SSH
+      pt-br: URL da chave publica SSH
+    required: false
+    rule: paramExtUrl
+    type: text
+  - default: "false"
+    edit: true
+    envKey: PASSWORD_ACCESS
+    labelEn: Password SSH access
+    labelZh: 允许 SSH 密码登录
+    label:
+      en: Password SSH access
+      zh: 允许 SSH 密码登录
+      zh-Hant: 允許 SSH 密碼登入
+      ja: SSH パスワードログインを許可
+      ko: SSH 비밀번호 로그인 허용
+      ru: Разрешить вход SSH по паролю
+      ms: Benarkan akses SSH kata laluan
+      pt-br: Permitir acesso SSH por senha
+    required: false
+    type: select
+    values:
+      - label: "false"
+        value: "false"
+      - label: "true"
+        value: "true"
+  - default: "false"
+    edit: true
+    envKey: SUDO_ACCESS
+    labelEn: Sudo access
+    labelZh: 允许 sudo
+    label:
+      en: Sudo access
+      zh: 允许 sudo
+      zh-Hant: 允許 sudo
+      ja: sudo を許可
+      ko: sudo 허용
+      ru: Разрешить sudo
+      ms: Benarkan sudo
+      pt-br: Permitir sudo
+    required: false
+    type: select
+    values:
+      - label: "false"
+        value: "false"
+      - label: "true"
+        value: "true"
+  - default: ''
+    edit: true
+    envKey: USER_PASSWORD
+    labelEn: SSH/sudo password
+    labelZh: SSH/sudo 密码
+    label:
+      en: SSH/sudo password
+      zh: SSH/sudo 密码
+      zh-Hant: SSH/sudo 密碼
+      ja: SSH/sudo パスワード
+      ko: SSH/sudo 비밀번호
+      ru: Пароль SSH/sudo
+      ms: Kata laluan SSH/sudo
+      pt-br: Senha SSH/sudo
+    required: false
+    rule: paramComplexity
+    type: password
+  - default: Asia/Shanghai
+    edit: true
+    envKey: TIME_ZONE
+    labelEn: Time zone
+    labelZh: 时区
+    label:
+      en: Time zone
+      zh: 时区
+      zh-Hant: 時區
+      ja: タイムゾーン
+      ko: 시간대
+      ru: Часовой пояс
+      ms: Zon waktu
+      pt-br: Fuso horário
+    required: true
+    type: text
+  - default: "false"
+    edit: true
+    envKey: LOG_STDOUT
+    labelEn: Log to stdout
+    labelZh: 日志输出到标准输出
+    label:
+      en: Log to stdout
+      zh: 日志输出到标准输出
+      zh-Hant: 日誌輸出到標準輸出
+      ja: ログを標準出力へ出力
+      ko: 로그를 표준 출력으로 출력
+      ru: Выводить журналы в stdout
+      ms: Log ke stdout
+      pt-br: Enviar logs para stdout
+    required: false
+    type: select
+    values:
+      - label: "true"
+        value: "true"
+      - label: "false"
+        value: "false"

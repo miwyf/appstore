@@ -1,37 +1,52 @@
-<div align="center">
-<h1>文件快递柜-轻量</h1>
-<p><em>匿名口令分享文本，文件，像拿快递一样取文件</em></p>
-</div>
+# FileCodeBox
 
+## 产品介绍
+FileCodeBox 是一个用于匿名口令分享文本和文件的轻量文件快递柜。
 
----
+## 主要功能
+- 通过匿名口令分享文本和文件。
+- 使用 `/app/data` 持久化应用数据。
+- 提供后台入口用于管理文件分享，首次启动后在初始化页面设置管理员密码。
 
+## 访问说明
+安装完成后，通过应用表单中的 HTTP 端口访问 Web UI，并按初始化页面设置管理员密码；后台入口为 `/#/admin`。
 
-<div align="center" style="text-align: center;margin: 20px">
-    <a href="https://github.com/vastsa/FileCodeBox/blob/master/readme.md">简体中文</a> | 
-    <a href="https://github.com/vastsa/FileCodeBox/blob/master/readme_en.md">English</a> | 
-    <a href="https://github.com/vastsa/FileCodeBox/wiki/%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B">部署教程</a> | 
-    <a href="https://github.com/vastsa/FileCodeBox/wiki/%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B">常见问题</a>
-</div>
+## Introduction
+FileCodeBox is a lightweight file locker for sharing text and files with anonymous passcodes.
+
+## Features
+- Share text and files with anonymous passcodes.
+- Persist application data under `/app/data`.
+- Provide an admin entrypoint for managing shared files. Set the admin password on the initialization page after first launch.
+
+## 应用简介
+文件快递柜-匿名口令分享文本，文件，像拿快递一样取文件。
+
+英文说明：Anonymous Passcode Sharing Text, Files, Like Taking Express Delivery for Files.
+
+## 部署说明
+- 本应用使用 Docker Compose 在 1Panel 中部署。
+- 应用分类：工具。
+- 支持架构：amd64、arm64。
+- 可选版本：`latest`。
+- 安装后按应用表单中的端口访问 Web UI、SSH 或对应服务。
+
+## 端口
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| PANEL_APP_PORT_HTTP | 端口 | 40157 | 是 |
+
+## 数据持久化
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| DATA_PATH | 数据文件夹路径 | ./data | 是 |
+
+升级或迁移前，请在 1Panel 中备份上述数据目录。
 
 ## 使用说明
+- 首次访问时按初始化页面设置管理员密码。
+- 后台入口：`/#/admin`
 
-- 后端地址：`/#/admin`
-
-- 后台密码：`FileCodeBox2023`
-
-## 主要特色
-
-- [x] **轻量简洁：** 项目基于Fastapi + Sqlite3 + Vue3 + ElementUI
-- [x] **轻松上传：** 支持复制粘贴和拖拽选择
-- [x] **多种类型：** 支持文本和文件
-- [x] **防止爆破：** 错误次数限制
-- [x] **防止滥用：** IP限制上传次数
-- [x] **口令分享：** 随机口令，存取文件，自定义次数及有效期
-- [x] **国际化：** 支持中文简体、繁体以及英文等
-- [x] **匿名分享：** 无需注册，无需登录
-- [x] **管理面板：** 查看和删除文件
-- [x] **一键部署：** 支持Docker一键部署
-- [x] **自由拓展：** 支持S3协议和本地文件流，可根据需求在storage文件中新增存储引擎
-- [x] **简单明了：** 适合新手练手项目
-- [x] **终端下载：** 终端命令`wget https://share.lanol.cn/share/select?code=83432`
+## 参考资料
+- 官网: <https://share.lanol.cn>
+- 文档: <https://github.com/vastsa/FileCodeBox>

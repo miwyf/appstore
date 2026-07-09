@@ -1,0 +1,74 @@
+services:
+  odoo:
+    image: "odoo:19.0"
+    container_name: ${CONTAINER_NAME}
+    user: root
+    restart: always
+    depends_on:
+      odoo-db:
+        condition: service_healthy
+    networks:
+      - 1panel-network
+      - odoo-network
+    ports:
+      - "${PANEL_APP_PORT_HTTP}:8069"
+    entrypoint:
+      - /bin/bash
+      - -c
+    command:
+      - |
+        set -e
+        install -d -o odoo -g odoo -m 775 /var/lib/odoo /var/lib/odoo/sessions /mnt/extra-addons
+        if [ ! -f /var/lib/odoo/.1panel-permissions-ok ] || [ "$(stat -c '%u:%g' /var/lib/odoo)" != "100:101" ]; then
+          chown -R odoo:odoo /var/lib/odoo /mnt/extra-addons
+          touch /var/lib/odoo/.1panel-permissions-ok
+          chown odoo:odoo /var/lib/odoo/.1panel-permissions-ok
+        fi
+        {
+          printf '%s\n' '[options]'
+          printf '%s\n' 'addons_path = /mnt/extra-addons'
+          printf '%s\n' 'data_dir = /var/lib/odoo'
+          printf 'admin_passwd = %s\n' "$${ODOO_MASTER_PASSWORD}"
+        } > /var/lib/odoo/odoo.conf
+        chown odoo:odoo /var/lib/odoo/odoo.conf
+        chmod 600 /var/lib/odoo/odoo.conf
+        exec setpriv --reuid=odoo --regid=odoo --init-groups /entrypoint.sh odoo server -c /var/lib/odoo/odoo.conf
+    environment:
+      - TZ=${TZ}
+      - HOST=odoo-db
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=${POSTGRES_PASSWORD}
+      - ODOO_MASTER_PASSWORD=${ODOO_MASTER_PASSWORD}
+    volumes:
+      - "${APP_DATA_DIR}/odoo-data:/var/lib/odoo"
+      - "${APP_DATA_DIR}/addons:/mnt/extra-addons"
+    labels:
+      createdBy: "Apps"
+
+  odoo-db:
+    image: "postgres:15"
+    container_name: ${CONTAINER_NAME}-db
+    restart: always
+    networks:
+      - odoo-network
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - "${APP_DATA_DIR}/postgres:/var/lib/postgresql/data/pgdata"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    labels:
+      createdBy: "Apps"
+
+networks:
+  1panel-network:
+    external: true
+  odoo-network:
+    driver: bridge

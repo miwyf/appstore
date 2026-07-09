@@ -1,19 +1,73 @@
 # MixSpace
 
-Mix Space 是一个一款简洁而不简单的个人博客系统，它够快，够现代。你可以利用它构建一个属于自己的个人空间，记录生活，分享知识。
+## 产品介绍
+MixSpace 是开源自部署的个人博客后端系统，当前 `latest` 和 `13` 版本均基于 PostgreSQL 和 Redis 运行。
 
-## 注意事项
+## 主要功能
+- 提供个人博客、内容管理和 API 服务。
+- `latest` 和 `13` 版本使用 PostgreSQL 和 Redis，主服务启动时会自动执行数据库迁移。
+- 两个版本使用不同镜像标签，但当前运行时依赖保持一致。
 
-在此处你安装的是Mix-Space的后端，你还需要参照官方文档中的 [前端主题](https://mx-space.js.org/themes) 部分完成前端部署
+## 访问说明
+安装完成后，通过应用表单中的 HTTP 端口访问 MixSpace API；首次部署请按上游文档配置前端和允许访问域名。
 
-## 主要功能：
+## Introduction
+MixSpace is an open-source self-hosted backend for personal blogs. The current `latest` and `13` versions run with PostgreSQL and Redis.
 
-- 支持文本宏，Markdown与GFM语法
-- 集成个人日记与内置反垃圾评论系统
-- xLog集成，可把文章同步到去中心化平台并使用其AI摘要
-- 内建文件管理与多种通知方式
-- 支持自助申请友链并可一键检查其可用性
-- 通过计划任务实现包括备份与推送百度在内多种目的
-- 支持从 Markdown 导入文章，也支持导出文章为 Markdown
-- 动态化配置前端，你可以在后台设置前端的配置
-- 项目展示功能，你可以向访客展示你的项目，展现你的技术能力
+## Features
+- Provides personal blog, content management, and API services.
+- The `latest` and `13` versions use PostgreSQL and Redis; the main service runs database migrations automatically during startup.
+- Both versions use different image tags, but their current runtime dependencies are aligned.
+
+## 应用简介
+开源自部署个人前后端分离博客系统。
+
+英文说明：Open source self-deployed personal front-end and back-end separation blogging system.
+
+## 部署说明
+- 本应用使用 Docker Compose 在 1Panel 中部署。
+- 应用分类：网站。
+- 支持架构：amd64。
+- 可选版本：`latest`、`13`。
+- 安装后按应用表单中的端口访问 MixSpace API 或对应服务。
+
+## 端口
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| PANEL_APP_PORT_HTTP | 端口 | 40203 | 是 |
+
+## 数据持久化
+- `${DATA_PATH}/mx-space:/root/.mx-space`
+- `${DATA_PATH}/postgres:/var/lib/postgresql/data`
+- `${DATA_PATH}/redis:/data`
+
+升级或迁移前，请在 1Panel 中备份上述数据目录。
+
+## 升级说明
+- 升级脚本会为旧 `.env` 补充缺失的 `DATA_PATH`、`PG_PASSWORD`、`JWT_SECRET`、`SUBNET_PREFIX`，并创建 PostgreSQL/Redis 持久化目录。
+- 升级脚本会把自动生成的 `PG_PASSWORD`、`JWT_SECRET` 缓存在 `${DATA_PATH}/.mixspace_pg_password`、`${DATA_PATH}/.mixspace_jwt_secret`，避免后续升级重复生成导致旧数据不可用。
+- 旧版 MongoDB 数据目录 `${DATA_PATH}/db` 会被保留，但不会自动迁移到 PostgreSQL。
+- 从旧 MongoDB 拓扑升级前，请先完整备份应用目录，并按 MixSpace 上游文档评估数据迁移方案。
+
+## 配置项
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| DATA_PATH | 数据根目录 | ./data | 是 |
+| ALLOWED_ORIGINS | 被允许的域名 (多个使用英文逗号分割) | - | 是 |
+| JWT_SECRET | JWT 密钥 (16 到 32 位字符) | 安装时自动生成 | 是 |
+| PG_PASSWORD | PostgreSQL 密码 | 安装时自动生成 | 是 |
+| ENCRYPT_KEY | 加密密钥 (非特殊需求不建议填写,终端执行 "openssl rand -hex 32" 获取) | - | 否 |
+| ENCRYPT_ENABLE | 是否开启加密 (true或false,开启则需要填写加密密钥) | false | 是 |
+| TIME_ZONE | 时区 | Asia/Shanghai | 是 |
+| SUBNET_PREFIX | 新 docker 网络子网前缀 | 10.250.0 | 是 |
+
+## 使用说明
+- 安装完成后，在 1Panel 应用页面查看运行状态、端口和日志。
+- 首次安装时请填写 `ALLOWED_ORIGINS`、数据库参数和持久化目录；如需公网访问，请按上游说明单独部署前端并指向当前 API。
+- 如果修改了 `DATA_PATH`、数据库目录或上传目录，请在升级前确认这些路径已完成备份。
+- 如需对外开放访问，请同步检查防火墙、安全组和反向代理配置。
+
+## 参考资料
+- 官网: <https://mx-space.js.org>
+- 文档: <https://mx-space.js.org/docs>
+- 源码: <https://github.com/mx-space/core>

@@ -1,100 +1,65 @@
-<p align="center">
-<img src="https://docs.rsshub.app/logo.png" alt="RSSHub" width="100">
-</p>
-<h1 align="center">RSSHub</h1>
+# RSSHub
 
-> 🍰 Everything is RSSible
+## 产品介绍
+RSSHub 是一个开源、简单易用、易于扩展的 RSS 生成器，可将多种网站和服务内容转换为 RSS 订阅源。
 
-[![telegram](https://img.shields.io/badge/chat-telegram-brightgreen.svg?logo=telegram&style=flat-square)](https://t.me/rsshub)
-[![npm publish](https://img.shields.io/github/actions/workflow/status/DIYgod/RSSHub/npm-publish.yml?branch=master&label=npm%20publish&logo=npm&style=flat-square)](https://www.npmjs.com/package/rsshub)
-[![docker publish](https://img.shields.io/github/actions/workflow/status/DIYgod/RSSHub/docker-release.yml?branch=master&label=docker%20publish&logo=docker&style=flat-square)](https://hub.docker.com/r/diygod/rsshub)
-[![test](https://img.shields.io/github/actions/workflow/status/DIYgod/RSSHub/test.yml?branch=master&label=test&logo=github&style=flat-square)](https://github.com/DIYgod/RSSHub/actions/workflows/test.yml?query=event%3Apush+branch%3Amaster)
-[![Test coverage](https://img.shields.io/codecov/c/github/DIYgod/RSSHub.svg?style=flat-square&logo=codecov)](https://app.codecov.io/gh/DIYgod/RSSHub/branch/master)
-[![CodeFactor](https://www.codefactor.io/repository/github/diygod/rsshub/badge)](https://www.codefactor.io/repository/github/diygod/rsshub)
-[![DeepScan grade](https://deepscan.io/api/teams/6244/projects/8135/branches/92448/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=6244&pid=8135&bid=92448)
+本应用依赖 1Panel 中已安装的 Redis 服务。`latest` 版本使用独立 Browserless 服务提供浏览器能力，`chromium-bundled` 版本使用内置 Chromium 的 RSSHub 镜像。
+
+## 主要功能
+- 从网站、社交媒体、新闻源等生成标准 RSS。
+- 使用 Redis 缓存 RSSHub 数据。
+- 提供 `latest` 与 `chromium-bundled` 两个部署变体。
+- 支持通过 1Panel 的端口外部访问开关控制 Web 端口绑定范围。
+
+## 访问说明
+安装完成后，通过应用表单中的 HTTP 端口访问：
+
+```text
+http://<服务器 IP>:<HTTP 端口>
+```
+
+如关闭 1Panel 的端口外部访问开关，Web 端口将绑定到 `127.0.0.1`，可配合反向代理或本机访问使用。
 
 ## Introduction
+RSSHub is an open-source RSS generator that converts content from many websites and services into RSS feeds.
 
-RSSHub is an open source, easy to use, and extensible RSS feed generator. It's capable of generating RSS feeds from pretty much everything.
+This app requires an existing Redis service in 1Panel. The `latest` variant uses a separate Browserless service, while `chromium-bundled` uses the RSSHub image with Chromium included.
 
-RSSHub delivers millions of contents aggregated from all kinds of sources, our vibrant open source community is ensuring the deliver of RSSHub's new routes, new features and bug fixes.
+## Features
+- Generate RSS feeds from websites, social media, news sources, and other services.
+- Use Redis as the RSSHub cache backend.
+- Provide `latest` and `chromium-bundled` deployment variants.
+- Respect the 1Panel external port access toggle for the Web port binding.
 
-RSSHub can be used with browser extension [RSSHub Radar](https://github.com/DIYgod/RSSHub-Radar) and mobile auxiliary app [RSSBud](https://github.com/Cay-Zhang/RSSBud) (iOS) and [RSSAid](https://github.com/LeetaoGoooo/RSSAid) (Android)
+## 应用简介
+一个开源、简单易用、易于扩展的 RSS 生成器。
 
-[English docs](https://docs.rsshub.app/en) | [Telegram Group](https://t.me/rsshub) | [Telegram Channel](https://t.me/awesomeRSSHub)
+英文说明：An open-source, easy-to-use, and easy-to-scale RSS generator.
 
----
+## 部署说明
+- 本应用使用 Docker Compose 在 1Panel 中部署。
+- 应用分类：工具。
+- 支持架构：amd64。
+- 可选版本：`latest`、`chromium-bundled`。
+- 安装后按应用表单中的 HTTP 端口访问 Web UI。
 
-RSSHub 是一个开源、简单易用、易于扩展的 RSS 生成器，可以给任何奇奇怪怪的内容生成 RSS 订阅源。RSSHub 借助于开源社区的力量快速发展中，目前已适配数百家网站的上千项内容
+## 端口
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| PANEL_APP_PORT_HTTP | 端口 | 40062 | 是 |
+| REDIS_PORT | Redis服务端口 | 6379 | 是 |
 
-可以配合浏览器扩展 [RSSHub Radar](https://github.com/DIYgod/RSSHub-Radar) 和 移动端辅助 App [RSSBud](https://github.com/Cay-Zhang/RSSBud) (iOS) 与 [RSSAid](https://github.com/LeetaoGoooo/RSSAid) (Android) 食用
+## 配置项
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| REDIS_HOST | Redis服务 | - | 是 |
+| REDIS_PASS | Redis服务密码 | - | 是 |
 
-[中文文档](https://docs.rsshub.app) | [Telegram 群](https://t.me/rsshub) | [Telegram 频道](https://t.me/awesomeRSSHub)
+## 使用说明
+- 安装完成后，在 1Panel 应用页面查看运行状态、端口和日志。
+- 首次启用前，请按安装表单填写域名、账号、密码、Token、数据目录等参数。
+- 如需对外开放访问，请同步检查防火墙、安全组和反向代理配置。
 
-## Special Thanks
-
-### Contributors
-
-[![](https://opencollective.com/RSSHub/contributors.svg?width=890)](https://github.com/DIYgod/RSSHub/graphs/contributors)
-
-Logo designer [sheldonrrr](https://dribbble.com/sheldonrrr)
-
-### Backers
-
-<a href="https://www.cloudflare.com" target="_blank"><img height="50px" src="https://i.imgur.com/7Ph27Fq.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.netlify.com" target="_blank"><img height="40px" src="https://i.imgur.com/cU01915.png"></a>
-
-## Related Projects
-
--   [RSSHub Radar](https://github.com/DIYgod/RSSHub-Radar) | 一个可以帮助你快速发现和订阅当前网站 RSS 和 RSSHub 的浏览器扩展
--   [RSSBud](https://github.com/Cay-Zhang/RSSBud) ([TestFlight 公测](https://testflight.apple.com/join/rjCVzzHP)) | iOS 平台的 RSSHub Radar，专为移动生态优化
--   [RSSAid](https://github.com/LeetaoGoooo/RSSAid)  | 基于 Flutter 构建的 Android 平台的 RSSHub Radar
--   [DocSearch](https://github.com/Fatpandac/DocSearch) | Link RSSHub DocSearch into Raycast
-
-## Join Us
-
-We welcome all pull requests. Suggestions and feedback are also welcomed [here](https://github.com/DIYgod/RSSHub/issues).
-
-Refer to [Join Us](https://docs.rsshub.app/en/joinus/quick-start.html)
-
-见 [参与我们](https://docs.rsshub.app/joinus/quick-start.html)
-
-## Deployment
-
-Refer to [Deployment](https://docs.rsshub.app/en/install/)
-
-见 [部署](https://docs.rsshub.app/install/)
-
-## Support RSSHub
-
-Refer to [Support RSSHub](https://docs.rsshub.app/en/support/)
-
-见 [支持 RSSHub](https://docs.rsshub.app/support/)
-
-RSSHub is open source and completely free under the MIT license. However, just like any other open source project, as the project grows, the hosting, development and maintenance requires funding support.
-
-You can support RSSHub via donations.
-
-### Recurring Donation
-
-Recurring donors will be rewarded via express issue response, or even have your name displayed on our GitHub page and website.
-
--   Become a Sponser on [GitHub](https://github.com/sponsors/DIYgod)
--   Become a Sponser on [Open Collective](https://opencollective.com/RSSHub)
--   Become a Sponser on [Patreon](https://www.patreon.com/DIYgod)
--   Become a Sponser on [爱发电](https://afdian.net/@diygod)
--   Contact us directly: i@diygod.me
-
-### One-time Donation
-
-We accept donations via the following ways:
-
--   [WeChat Pay](https://archive.diygod.me/images/wx.jpg)
--   [Alipay](https://archive.diygod.me/images/zfb.jpg)
--   [Paypal](https://www.paypal.me/DIYgod)
-
-## Author
-
-**RSSHub** © [DIYgod](https://github.com/DIYgod), Released under the [MIT](./LICENSE) License.<br>
-Authored and maintained by DIYgod with help from contributors ([list](https://github.com/DIYgod/RSSHub/contributors)).
-
-> Blog [@DIYgod](https://diygod.me) · GitHub [@DIYgod](https://github.com/DIYgod) · Twitter [@DIYgod](https://twitter.com/DIYgod) · Telegram Channel [@awesomeDIYgod](https://t.me/awesomeDIYgod)
+## 参考资料
+- 官网: <https://docs.rsshub.app/>
+- 源码: <https://github.com/DIYgod/RSSHub>

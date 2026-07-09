@@ -1,73 +1,72 @@
 # Next Terminal
 
-[![Docker guacd build](https://github.com/dushixiang/next-terminal/actions/workflows/docker-guacd.yml/badge.svg)](https://github.com/dushixiang/next-terminal/actions/workflows/docker-guacd.yml)
-[![Docker next-terminal build](https://github.com/dushixiang/next-terminal/actions/workflows/docker-next-terminal.yml/badge.svg)](https://github.com/dushixiang/next-terminal/actions/workflows/docker-next-terminal.yml)
+## 产品介绍
+一个简单好用安全的交互审计系统，支持 RDP、SSH、VNC、Telnet、Kubernetes 等协议。
 
-## 快速了解
+当前应用包按 Next Terminal 官方容器部署方式提供 Next Terminal、Guacd 和 PostgreSQL 服务。安装脚本会在数据目录中生成 `config.yaml`，并保留已经存在的配置文件。
 
-Next Terminal是一个简单好用安全的开源交互审计系统，支持RDP、SSH、VNC、Telnet、Kubernetes协议。
+## 主要功能
+- 管理和审计 RDP、SSH、VNC、Telnet、Kubernetes 等远程连接。
+- 使用 Guacd 提供远程桌面协议支持。
+- 使用内置 PostgreSQL 保存应用数据。
+- 持久化配置、日志、录屏和数据库数据。
+- Web UI 与 SSH 代理端口可在 1Panel 表单中配置。
 
-目前支持的功能有：
+## 访问说明
+安装完成后，通过应用表单中的 Web UI 端口访问：
 
-- 授权凭证管理
-- 资产管理（支持RDP、SSH、VNC、TELNET协议）
-- 指令管理
-- 批量执行命令
-- 在线会话管理（监控、强制断开）
-- 离线会话管理（查看录屏）
-- 双因素认证
-- 资产标签
-- 资产授权
-- 多用户&用户分组
-- 计划任务
-- ssh server
-- 登录策略
-- 系统监控
+```text
+http://<服务器 IP>:<Web UI 端口>
+```
 
-## 在线体验
+`SSH 代理端口` 仅在 Next Terminal 后台启用 SSH 代理服务后使用。升级或迁移前，请先在 1Panel 中备份应用数据目录。
 
-**web**
+## Introduction
+Next Terminal is a simple and secure interactive audit system supporting RDP, SSH, VNC, Telnet, Kubernetes, and related remote access protocols.
 
-https://next.typesafe.cn/ 账号：test  密码：test
+This package follows the official container deployment model and includes Next Terminal, Guacd, and PostgreSQL. The install script generates `config.yaml` in the data directory and preserves an existing config file.
 
-**ssh server**
+## Features
+- Manage and audit RDP, SSH, VNC, Telnet, Kubernetes, and related remote sessions.
+- Use Guacd for remote desktop protocol support.
+- Store application data in the bundled PostgreSQL service.
+- Persist config, logs, recordings, and database files.
+- Configure Web UI and SSH proxy ports from the 1Panel form.
 
-主机：next.typesafe.cn
-端口：2022
-账号：test  密码：test
+## 应用简介
+一个简单好用安全的交互审计系统，支持 RDP、SSH、VNC、Telnet、Kubernetes 等协议。
 
-## 协议与条款
+英文说明：A simple and secure interactive audit system supporting RDP, SSH, VNC, Telnet, Kubernetes, and related remote access protocols.
 
-如您需要在企业网络中使用 next-terminal，建议先征求 IT 管理员的同意。下载、使用或分发 next-terminal 前，您必须同意 [协议](./LICENSE) 条款与限制。本项目不提供任何担保，亦不承担任何责任。
+## 部署说明
+- 本应用使用 Docker Compose 在 1Panel 中部署。
+- 当前容器版本需要 `config.yaml` 和 PostgreSQL；安装脚本会在数据目录中自动生成 `config.yaml`。
+- 应用分类：工具。
+- 支持架构：amd64。
+- 可选版本：`latest`、`3.1.1`。
 
-## 快速安装
+## 端口
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| PANEL_APP_PORT_HTTP | Web UI 端口 | 40058 | 是 |
+| PANEL_APP_PORT_SSH | SSH 代理端口，需在 Next Terminal 后台启用 SSH 代理服务器 | 40059 | 否 |
 
-- [安装文档](https://next-terminal.typesafe.cn)
+## 数据持久化
+| 路径 | 说明 |
+| --- | --- |
+| `DATA_PATH` | Next Terminal 数据、日志、`config.yaml` 和内置 PostgreSQL 数据目录 |
+| `DATA_PATH/postgresql` | PostgreSQL 数据目录 |
+| `DATA_PATH/logs` | Next Terminal 日志目录 |
 
-默认账号密码为 admin/admin 。
+升级或迁移前，请在 1Panel 中备份应用数据目录。
 
-## 手动编译
+## 数据库
+当前应用包按官方容器部署方式内置 PostgreSQL 服务，并通过 `PANEL_DB_NAME`、`PANEL_DB_USER`、`PANEL_DB_USER_PASSWORD` 初始化数据库。
 
-1. 找一台Linux 机器或者Mac
-2. 安装 go 1.18 或以上版本
-3. 安装 nodejs 16，安装 npm 或 yarn
-4. 进入 web 目录 执行 yarn 或 npm install
-5. 返回上级目录，也就是项目根目录，执行 sh build.sh
+## 升级注意
+Next Terminal 上游历史版本存在不兼容迁移，旧的 SQLite/单容器部署不能保证无缝升级到当前 PostgreSQL 部署。应用包已关闭跨版本升级；如需迁移旧数据，请先按官方文档导出/备份，再在新部署中恢复。
 
-## 问题反馈
-
-- Issues
-- 微信群 加我微信拉你进群 (请备注 next-terminal)
-
-<img src="https://github.com/dushixiang/next-terminal/raw/master/wx.png" width="300"  height="auto"/>
-
-- QQ群 938145268
-- Telegram https://t.me/next_terminal
-
-## 安全问题
-
-如果您在使用过程中发现了安全问题，请发送邮件至 helloworld1024@foxmail.com 联系我，谢谢。
-
-## License 
-
-Next Terminal 使用 [AGPL-3.0](./LICENSE) 开源协议，请自觉遵守。
+## 参考资料
+- 官网: <https://next-terminal.typesafe.cn/>
+- 文档: <https://docs.next-terminal.typesafe.cn/>
+- 源码: <https://github.com/dushixiang/next-terminal>

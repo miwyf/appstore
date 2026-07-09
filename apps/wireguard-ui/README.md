@@ -1,5 +1,51 @@
-# 使用说明
+# WireGuard-UI
 
+## 应用简介
+Wireguard 网络界面。
+
+英文说明：Wireguard web interface.
+
+## 部署说明
+- 本应用使用 Docker Compose 在 1Panel 中部署。
+- 应用分类：工具。
+- 支持架构：amd64。
+- 可选版本：`latest`、`0.6.2`。
+- 安装后按应用表单中的端口访问 Web UI、SSH 或对应服务。
+
+## 端口
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| PANEL_APP_PORT_HTTP | 网页端口 | 40073 | 是 |
+| PANEL_APP_PORT_WIREGUARD | Wireguard 端口 | 51820 | 是 |
+
+## 数据持久化
+- `${DATA_PATH}/db:/app/db`
+- `${DATA_PATH}/config:/etc/wireguard`
+- `${DATA_PATH}/config:/config`
+
+升级或迁移前，请在 1Panel 中备份上述数据目录。
+
+## 配置项
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| DATA_PATH | 数据文件夹路径 | ./data | 是 |
+| WEBUI_USER | 网页用户 | admin | 是 |
+| WEBUI_PWD | 网页密码 | password | 是 |
+| SESSION_SECRET | 会话密钥 | 随机值 | 是 |
+| SESSION_MAX_DURATION | 会话最长保留天数 | 90 | 是 |
+| BASE_PATH | 反向代理子路径 | 空 | 否 |
+| WGUI_LOG_LEVEL | 日志等级 | INFO | 否 |
+| WGUI_SERVER_INTERFACE_ADDRESSES | 服务端接口地址 | 10.252.1.0/24 | 是 |
+| WGUI_DNS | 默认 DNS 服务器 | 1.1.1.1 | 是 |
+| WGUI_MTU | 默认 MTU | 1450 | 是 |
+| WGUI_PERSISTENT_KEEPALIVE | 持久保活 | 15 | 是 |
+| WGUI_DEFAULT_CLIENT_ALLOWED_IPS | 默认客户端 Allowed IPs | 0.0.0.0/0 | 是 |
+| WGUI_DEFAULT_CLIENT_USE_SERVER_DNS | 客户端使用服务端 DNS | true | 是 |
+| WGUI_DEFAULT_CLIENT_ENABLE_AFTER_CREATION | 创建后启用客户端 | true | 是 |
+| WGUI_MANAGE_START | 容器启动/停止时管理 WireGuard | false | 否 |
+| WGUI_MANAGE_RESTART | 应用配置后自动重启 WireGuard | true | 否 |
+
+## 使用说明
 新版本的镜像假如遇到网页登录存在问题，或许可以尝试重启应用再登录。
 
 假如无效，则可以在 1Panel 高级设置里编辑应用`compose`文件调整以下参数，具体可以查看原项目说明。
@@ -9,20 +55,6 @@
       - WGUI_MANAGE_RESTART=true
 ```
 
-# 原始相关
-***
-
-![](https://github.com/ngoduykhanh/wireguard-ui/workflows/wireguard-ui%20build%20release/badge.svg)
-
-# wireguard-ui
-
-A web user interface to manage your WireGuard setup.
-
-## Features
-
-- Friendly UI
-- Authentication
-- Manage extra client information (name, email, etc)
-- Retrieve client config using QR code / file / email
-
-![wireguard-ui 0.3.7](https://user-images.githubusercontent.com/37958026/177041280-e3e7ca16-d4cf-4e95-9920-68af15e780dd.png)
+## 参考资料
+- 官网: <https://www.wireguard.com/>
+- 源码: <https://github.com/ngoduykhanh/wireguard-ui>

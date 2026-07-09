@@ -1,10 +1,7 @@
 name: Renovate automerge for whitelisted apps
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - localApps
+  # Automatic PR-triggered merging is temporarily disabled.
   workflow_dispatch:
     inputs:
       pr_number:
@@ -37,12 +34,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Verify changed files stay within whitelist
         id: whitelist
         env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
           REPO="${{ github.repository }}"
@@ -83,10 +80,164 @@ jobs:
 
           echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
 
-      - name: Add marker label for eligible PR
+      - name: Verify PR is a single-service image-only update
+        id: shape
         if: steps.whitelist.outputs.allowed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+          REPO="${{ github.repository }}"
+
+          BASE_SHA=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.base.sha')
+          HEAD_SHA=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.head.sha')
+          export BASE_SHA HEAD_SHA
+
+          git fetch --no-tags --depth=1 origin "$BASE_SHA" "$HEAD_SHA"
+          gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate > /tmp/renovate-pr-files.json
+          python3 - <<'PY'
+          import importlib.util
+          import subprocess
+          import sys
+
+          if importlib.util.find_spec("yaml") is None:
+              subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", "pyyaml"])
+          PY
+
+          set +e
+          python3 <<'PY' 2> /tmp/renovate-shape.stderr
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+          import yaml
+
+          base_sha = os.environ["BASE_SHA"]
+          head_sha = os.environ["HEAD_SHA"]
+
+          class GateReject(Exception):
+              pass
+
+          def reject(message):
+              raise GateReject(message)
+
+          def run_git(*args):
+              return subprocess.run(
+                  ["git", *args],
+                  check=False,
+                  text=True,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.PIPE,
+              )
+
+          def git_show_first(ref, candidates):
+              for path in candidates:
+                  if not path:
+                      continue
+                  proc = run_git("show", f"{ref}:{path}")
+                  if proc.returncode == 0:
+                      return path, proc.stdout
+              return None, ""
+
+          def compose(path, content):
+              data = yaml.safe_load(content) or {}
+              if not isinstance(data, dict):
+                  reject(f"invalid compose YAML: {path}")
+              services = data.get("services")
+              if not isinstance(services, dict) or len(services) != 1:
+                  reject(f"compose must contain exactly one service: {path}")
+              return data, services
+
+          try:
+              with open("/tmp/renovate-pr-files.json", encoding="utf-8") as fh:
+                  files = json.load(fh)
+
+              apps = set()
+              compose_files = []
+
+              for file_info in files:
+                  filename = file_info["filename"]
+                  previous = file_info.get("previous_filename")
+
+                  for path in [filename, previous]:
+                      if not path:
+                          continue
+                      match = re.match(r"^apps/([^/]+)/", path)
+                      if not match:
+                          reject(f"changed file outside apps/: {path}")
+                      apps.add(match.group(1))
+
+                  if filename.endswith("/docker-compose.yml") or (previous and previous.endswith("/docker-compose.yml")):
+                      compose_files.append((previous or filename, filename))
+
+              if len(apps) != 1:
+                  reject(f"PR must affect exactly one app, got {', '.join(sorted(apps))}")
+              if len(compose_files) < 1:
+                  reject("PR must change at least one docker-compose.yml")
+
+              app_name = next(iter(apps))
+              checked = 0
+
+              for old_path, new_path in compose_files:
+                  old_resolved_path, old_raw = git_show_first(base_sha, [old_path, new_path])
+                  new_resolved_path, new_raw = git_show_first(head_sha, [new_path, old_path])
+                  if not old_raw:
+                      reject(f"cannot read base compose: {old_path}")
+                  if not new_raw:
+                      reject(f"cannot read head compose: {new_path}")
+
+                  old_data, old_services = compose(old_resolved_path, old_raw)
+                  new_data, new_services = compose(new_resolved_path, new_raw)
+
+                  old_image = next(iter(old_services.values())).get("image")
+                  new_image = next(iter(new_services.values())).get("image")
+                  if not old_image or not new_image or old_image == new_image:
+                      reject(f"compose service image must change: {new_resolved_path}")
+
+                  old_data.pop("version", None)
+                  new_data.pop("version", None)
+                  for service in old_services.values():
+                      if isinstance(service, dict):
+                          service.pop("image", None)
+                  for service in new_services.values():
+                      if isinstance(service, dict):
+                          service.pop("image", None)
+
+                  if old_data != new_data:
+                      reject(f"compose changed beyond service image tag: {new_resolved_path}")
+
+                  print(f"verified {new_resolved_path}: {old_image} -> {new_image}")
+                  checked += 1
+
+              print(f"single-service image-only update verified for {app_name} across {checked} compose file(s)")
+          except GateReject as exc:
+              print(str(exc), file=sys.stderr)
+              sys.exit(42)
+          PY
+          shape_exit=$?
+          set -e
+
+          if [ "$shape_exit" -eq 0 ]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          elif [ "$shape_exit" -eq 42 ]; then
+            cat /tmp/renovate-shape.stderr
+            {
+              echo 'reason<<EOF'
+              cat /tmp/renovate-shape.stderr
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          else
+            cat /tmp/renovate-shape.stderr >&2 || true
+            exit "$shape_exit"
+          fi
+
+      - name: Add marker label for eligible PR
+        if: steps.whitelist.outputs.allowed == 'true' && steps.shape.outputs.allowed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
           gh pr edit "$PR_NUMBER" \
@@ -95,21 +246,21 @@ jobs:
 
       - name: Check commits for app-version update marker
         id: marker
-        if: steps.whitelist.outputs.allowed == 'true'
+        if: steps.whitelist.outputs.allowed == 'true' && steps.shape.outputs.allowed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
           REPO="${{ github.repository }}"
 
           found=false
           for attempt in 1 2 3 4 5; do
-            PULL_COMMITS=$(gh api repos/$REPO/pulls/$PR_NUMBER/commits --paginate --jq '.[].commit.message' || true)
-            BASE_SHA=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json baseRefOid --jq '.baseRefOid' || true)
-            HEAD_SHA=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json headRefOid --jq '.headRefOid' || true)
+            PULL_COMMITS=$(gh api "repos/$REPO/pulls/$PR_NUMBER/commits" --paginate --jq '.[].commit.message' || true)
+            BASE_SHA=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.base.sha' || true)
+            HEAD_SHA=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.head.sha' || true)
             COMPARE_COMMITS=""
             if [ -n "$BASE_SHA" ] && [ -n "$HEAD_SHA" ]; then
-              COMPARE_COMMITS=$(gh api repos/$REPO/compare/$BASE_SHA...$HEAD_SHA --jq '.commits[].commit.message' || true)
+              COMPARE_COMMITS=$(gh api "repos/$REPO/compare/$BASE_SHA...$HEAD_SHA" --jq '.commits[].commit.message' || true)
             fi
 
             echo "== attempt $attempt pull commits =="
@@ -132,9 +283,9 @@ jobs:
           echo "found=$found" >> "$GITHUB_OUTPUT"
 
       - name: Merge PR
-        if: steps.whitelist.outputs.allowed == 'true' && steps.marker.outputs.found == 'true'
+        if: steps.whitelist.outputs.allowed == 'true' && steps.shape.outputs.allowed == 'true' && steps.marker.outputs.found == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
           REPO="${{ github.repository }}"

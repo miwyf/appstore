@@ -1,5 +1,9 @@
+networks:
+  1panel-network:
+    external: true
 services:
   sqlitebrowser:
+    image: "linuxserver/sqlitebrowser:18.04.1"
     container_name: ${CONTAINER_NAME}
     restart: always
     networks:
@@ -8,19 +12,16 @@ services:
       - "${PANEL_APP_PORT_HTTP}:3000"
       - "${PANEL_APP_PORT_HTTPS}:3001"
     volumes:
-      - "${DATA_PATH}:/config"
+      - "${CONFIG_PATH}:/config"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=${TIME_ZONE}
-      - CUSTOM_USER=${HTTP_USER}
-      - PASSWORD=${HTTP_PWD}
-    image: linuxserver/sqlitebrowser:18.04.1
-    security_opt:
-      - seccomp:unconfined
-    labels:  
+      - CUSTOM_USER=${CUSTOM_USER}
+      - PASSWORD=${PASSWORD}
+      - TITLE=${TITLE:-DB Browser for SQLite}
+      - SELKIES_UI_TITLE=${SELKIES_UI_TITLE:-Selkies}
+      - DASHBOARD=${DASHBOARD:-selkies-dashboard}
+      - LC_ALL=${LC_ALL}
+    labels:
       createdBy: "Apps"
-
-networks:  
-  1panel-network:  
-    external: true

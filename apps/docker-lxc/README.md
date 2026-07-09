@@ -1,154 +1,55 @@
-# Running stateful linux containers in docker ![](https://img.shields.io/docker/pulls/micwy/lxc.svg?v_DATE)
+# Docker LXC
 
-> :warning: This is a complete rewrite, using LXC only without vagrant. It is able to run LXC containers created with v0.1 but
-> config and usage differs. Use tag v0.1 to get the old version.
+## 应用简介
 
-Docker Hub: [micwy/lxc](https://hub.docker.com/r/micwy/lxc) 
+`docker-lxc` 用于在 Docker 容器中运行一个带持久化根文件系统的 LXC 系统容器。默认没有 Web UI，安装完成后主要通过 SSH 或 1Panel 控制台进入系统。
 
-I'm very impressed, how much pulls this image gets. Please let me know how you use this (just create an issue at github), I'll add this to the "Use-Cases" section.
+本适配按上游镜像的真实约束整理：
 
-## Why?
+- `/data` 是必需的数据卷，保存 `rootfs`、LXC 配置和机器状态。
+- 额外挂载必须放到 `/vol/...`，才能在 LXC 内原样看到。
+- 容器必须开启 `privileged: true`。
+- 适配里还会共享宿主 PID namespace，并以读写方式挂载 `/sys/fs/cgroup`，这是当前 Docker/cgroup v2 环境下让 LXC 正常启动所需的宿主能力。
+- 仅提供 `amd64` 架构。
 
-In some cases, it might be usefull to run full-blown operating systems in a docker environment which have "state", primarily meaning to have a persitent root volume. With docker only, this is not possible since docker does not allow / to be a volume. This is where LXC comes into play. LXC provides a process isolation similar to docker but with statefull root filesystems. Unfortunately, with the rise of docker, management tools for docker are much more widespread and sophisticated than those for LXC.
+## 版本
 
-This project allows to use a single LXC container within a docker container to get best of both worlds.
+- `latest`: `micwy/lxc:latest`
+- `1.2`: `micwy/lxc:v1.2`
 
-## Features
+## 表单参数
 
-* Runs a single LXC container in docker with full OS and persistent root
-* Use features unique to docker for your lxc containers (e.g. docker-compose, exposed ports, traefik for ingress, kubernetes as platform)
-* The LXC container uses the same limits and network stack as the docker container, so things like exposed ports works as expected
-* Proper signal handling in both directions (shutting down the docker container properly shuts down the LXC container. Poweroff in LXC shuts down the docker container)
-* LXCFS support: Within the container, uptime and limits are displayed correctly
-* Shell-Wrapper: If /bin/sh is invoked with "docker exec", a shell in the LXC container is spawned. So a console in most management tools opens directly within the LXC container, not in the surrounding docker container
-* Creation of initial root filesystems: for some distributions, an initial root filesystem can simply be set up, using an environment variable
-* Adding of initial SSH key via environment variable to get instant log-in
+| 变量 | 说明 | 默认值 | 必填 |
+| --- | --- | --- | --- |
+| `PANEL_APP_PORT_HTTP` | SSH 端口 | `40044` | 是 |
+| `DATA_PATH` | LXC 根数据目录，对应容器内 `/data` | `./data/data` | 是 |
+| `SHARED_PATH` | 共享宿主目录 | `./data/shared` | 是 |
+| `SHARED_TARGET` | LXC 内共享挂载路径，必须以 `/vol/` 开头 | `/vol/shared` | 是 |
+| `DISTRIBUTION` | 首次初始化使用的发行版 | `alpine` | 是 |
+| `ALPINE_VERSION` | Alpine 初始化版本 | `latest-stable` | 是 |
+| `ALPINE_EXTRA_PACKAGES` | 首次初始化额外安装的软件包 | 空 | 否 |
+| `SSH_KEY` | 首次写入 root 的 SSH 公钥 | 空 | 否 |
+| `LXC_HOSTNAME` | LXC 主机名 | `lxc1` | 是 |
+| `USE_LXCFS` | 是否启用 LXCFS | `false` | 是 |
+| `COPY_RESOLV_CONF` | 是否把外层容器的 `resolv.conf` 复制到 LXC | `true` | 是 |
 
-### Some Use-Cases
+## 部署前置
 
-* Provide "home containers" for your users, each with own ssh access and persistent state
-* Run a linux remote desktop server on kubernetes
-* Easily run statefull software (like froxlor control panel or plesk) on docker/kubernetes
+- 宿主机需要支持 `privileged` 容器，并允许共享宿主 PID namespace。
+- 当前适配已包含 `pid: host`、`cgroup: host` 和 `/sys/fs/cgroup:/sys/fs/cgroup:rw`，这是在现代 Docker + cgroup v2 环境中让上游镜像稳定启动 LXC 所需的最小已验证组合。
+- 仅适用于 `amd64` 宿主。
 
-### Ideas / Backlog
+## 使用说明
 
-* Support more distribution root filesystems
-* Import rootfs from vagrant-lxc boxes
+1. 首次安装时，如果 `${DATA_PATH}/rootfs` 不存在，镜像会按照 `DISTRIBUTION` 初始化系统。
+2. 如果留空 `SSH_KEY`，应用仍可启动，但需要先通过 1Panel 控制台进入容器，再自行添加公钥。
+3. 默认只映射 SSH 端口。若你在 LXC 内另外运行 Web、数据库或其他服务，需要再为对应端口补充映射。
+4. `SHARED_TARGET` 必须写成 `/vol/...`，例如 `/vol/shared`、`/vol/www`。安装脚本会做校验。
+5. 调整目录或发行版前，请备份 `DATA_PATH` 与 `SHARED_PATH`。
 
-## How to run
+## 风险说明
 
-```
-docker run -d \
-  --name lxc \
-  --privileged  \
-  --hostname lxctest1 \
-  -v /path/to/data:/data \
-  -v /path/to/somedir:/vol/somedir \
-  -e DISTRIBUTION=alpine \
-  -e INITIAL_SSH_KEY="ssh-rsa AAAA...Q== my-initial-ssh-key" \
-  micwy/lxc
- ```
-
-* "privileged" is currently required to run LXC on the container
-* The hostname is passed into the lxc container
-* The volume /data contains the root filesystem (under /data/rootfs) and some additional files (temporary root fs during system creation, lxc config)
-
-### Running on Kubernetes
-
-Here's an example yaml to run this on kubernetes. If there's some interest, I can also provide a helm chart.
-
-```
----
-# Source: lxc/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mylxcbox
-  labels:
-    app.kubernetes.io/name: lxc
-    app.kubernetes.io/instance: mylxcbox
-spec:
-  replicas: 
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: lxc
-      app.kubernetes.io/instance: mylxcbox
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: lxc
-        app.kubernetes.io/instance: mylxcbox
-    spec:
-      containers:
-        - name: lxc
-          image: "micwy/lxc:latest"
-          imagePullPolicy: Always
-          # Required to launch lxc containers in the docker container
-          securityContext:
-            privileged: true
-          # Required to make LXC console work
-          stdin: true
-          tty: true
-          ports:
-            - name: ssh
-              containerPort: 22
-              protocol: TCP
-              hostPort: 2201
-          env:
-            - name: "DISTRIBUTION"
-              value: "archlinux"
-            - name: "INITIAL_SSH_KEY"
-              value: "ssh-rsa ...DVs= my-ssh-key"
-          volumeMounts:
-            - mountPath: /data
-              name: data
-      # Will be passed into the lxc container
-      hostname: mylxcbox
-      volumes:
-      - name: data
-        hostPath:
-          path: /data/mylxcbox
-  # Strategy must be recreate if hostPort is used
-  strategy:
-    type: Recreate
-
-```
-
-### Environment variables
-
-* DISTRIBUTION: triggers a distribution specific setup script if /data/rootfs does not exist (see below)
-* INITIAL_SSH_KEY: if set, it is copied to /root/.ssh/authorized keys on startup if that file does not exist yet
-* USE_LXCFS (default false): if true, mount [LXCFS](https://github.com/lxc/lxcfs) into the LXC container
-    * :warning: May not work with systemd!
-* COPY_RESOLV_CONF (default true): if true, copy resolv.conf from docker container into the LXC container
-
-### Additional volumes
-
-* the directory /vol of the docker container is mounted with "rbind" into /vol on the LXC container
-* Every docker-volume that is mounted to /vol/something will appear as /vol/something on LXC
-
-### Available distribution setup scripts
-
-#### DISTRIBUTION: alpine
-
-Installs alpine if rootfs does not exist.
-
-Features:
-* Quite minimal image with bash, nano and openssh
-
-Supported environment variables:
-* ALPINE_ARCH: (default x86_64): architecture of the rootfs
-* ALPINE_VERSION: (default latest-stable): alpine version to install
-* ALPINE_EXTRA_PACKAGES: additional packages to install along with the rootfs
-
-#### DISTRIBUTION: archlinux
-
-Installs archlinux if rootfs does not exist.
-
-Features:
-* Basic system image with common tools and openssh
-
-Supported environment variables:
-* ARCHLINUX_INSTALL_TRIZEN: (default: true): if true, install the trizen package manager for AUR packages
-* ARCHLINUX_EXTRA_PACKAGES: additional packages to install along with the rootfs. Installation will be run with trizen if installed, otherwise with pacman
-* ARCHLINUX_MIRRORLIST_COUNTRY (default: Germany - I confess, I'm biased): Country to use for create an initial packman mirror list
+- 这个镜像当前仅有 `amd64` Docker manifest。
+- 上游说明 `USE_LXCFS=true` 在部分 systemd 发行版上可能不稳定。
+- 这是一个高权限应用：`privileged`、`pid: host` 与 `/sys/fs/cgroup` 读写挂载都会让容器直接接触宿主的关键能力。
+- 面板安装后默认主要通过 SSH 或控制台使用，不是普通 Web 应用。

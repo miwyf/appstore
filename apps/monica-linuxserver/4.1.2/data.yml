@@ -1,0 +1,241 @@
+additionalProperties:
+  formFields:
+  - default: 80
+    edit: true
+    envKey: PANEL_APP_PORT_HTTP
+    labelEn: HTTP Port
+    labelZh: HTTP 端口
+    label:
+      en: HTTP Port
+      zh: HTTP 端口
+      zh-Hant: HTTP 連接埠
+      ja: HTTP ポート
+      ko: HTTP 포트
+      ru: HTTP-порт
+      ms: Port HTTP
+      pt-br: Porta HTTP
+    required: true
+    type: number
+    rule: paramPort
+  - default: 443
+    edit: true
+    envKey: PANEL_APP_PORT_HTTPS
+    labelEn: HTTPS Port
+    labelZh: HTTPS 端口
+    label:
+      en: HTTPS Port
+      zh: HTTPS 端口
+      zh-Hant: HTTPS 連接埠
+      ja: HTTPS ポート
+      ko: HTTPS 포트
+      ru: HTTPS-порт
+      ms: Port HTTPS
+      pt-br: Porta HTTPS
+    required: true
+    type: number
+    rule: paramPort
+  - default: ./data/config
+    edit: true
+    envKey: CONFIG_PATH
+    labelEn: Config folder path
+    labelZh: 配置文件路径
+    label:
+      en: Config folder path
+      zh: 配置文件路径
+      zh-Hant: 設定檔資料夾路徑
+      ja: 設定フォルダーのパス
+      ko: 설정 폴더 경로
+      ru: Путь к папке конфигурации
+      ms: Laluan folder konfigurasi
+      pt-br: Caminho da pasta de configuração
+    required: true
+    type: text
+  - default: monica-db
+    edit: true
+    envKey: DB_HOST
+    labelEn: Database host
+    labelZh: 数据库主机
+    label:
+      en: Database host
+      zh: 数据库主机
+      zh-Hant: 資料庫主機
+      ja: データベースホスト
+      ko: 데이터베이스 호스트
+      ru: Хост базы данных
+      ms: Hos pangkalan data
+      pt-br: Host do banco
+    required: true
+    type: text
+  - default: 3306
+    edit: true
+    envKey: DB_PORT
+    labelEn: Database port
+    labelZh: 数据库端口
+    label:
+      en: Database port
+      zh: 数据库端口
+      zh-Hant: 資料庫連接埠
+      ja: データベースポート
+      ko: 데이터베이스 포트
+      ru: Порт базы данных
+      ms: Port pangkalan data
+      pt-br: Porta do banco
+    required: true
+    type: number
+  - default: monica
+    edit: true
+    envKey: DB_USERNAME
+    labelEn: Database username
+    labelZh: 数据库用户名
+    label:
+      en: Database username
+      zh: 数据库用户名
+      zh-Hant: 資料庫使用者名稱
+      ja: データベースユーザー名
+      ko: 데이터베이스 사용자 이름
+      ru: Имя пользователя базы
+      ms: Nama pengguna pangkalan data
+      pt-br: Usuario do banco
+    required: true
+    type: text
+  - default: monica
+    edit: true
+    envKey: DB_DATABASE
+    labelEn: Database name
+    labelZh: 数据库名称
+    label:
+      en: Database name
+      zh: 数据库名称
+      zh-Hant: 資料庫名稱
+      ja: データベース名
+      ko: 데이터베이스 이름
+      ru: Имя базы данных
+      ms: Nama pangkalan data
+      pt-br: Nome do banco
+    required: true
+    type: text
+  - default: ''
+    edit: true
+    envKey: DB_PASSWORD
+    labelEn: Database password
+    labelZh: 数据库密码
+    label:
+      en: Database password
+      zh: 数据库密码
+      zh-Hant: 資料庫密碼
+      ja: データベースパスワード
+      ko: 데이터베이스 비밀번호
+      ru: Пароль базы данных
+      ms: Kata laluan pangkalan data
+      pt-br: Senha do banco de dados
+    required: true
+    random: true
+    type: password
+    rule: paramComplexity
+  - default: ''
+    edit: true
+    envKey: APP_URL
+    labelEn: App URL
+    labelZh: 应用访问 URL
+    label:
+      en: App URL
+      zh: 应用访问 URL
+      zh-Hant: 應用存取 URL
+      ja: アプリ URL
+      ko: 앱 URL
+      ru: URL приложения
+      ms: URL aplikasi
+      pt-br: URL do aplicativo
+    required: true
+    type: text
+    rule: paramExtUrl
+  - default: ''
+    edit: true
+    envKey: TRUSTED_PROXIES
+    labelEn: Trusted proxies
+    labelZh: 可信代理
+    label:
+      en: Trusted proxies
+      zh: 可信代理
+      zh-Hant: 可信代理
+      ja: 信頼済みプロキシ
+      ko: 신뢰할 수 있는 프록시
+      ru: Доверенные прокси
+      ms: Proksi dipercayai
+      pt-br: Proxies confiaveis
+    required: false
+    type: text
+  - default: local
+    edit: true
+    envKey: APP_ENV
+    labelEn: App environment
+    labelZh: 应用运行环境
+    label:
+      en: App environment
+      zh: 应用运行环境
+      zh-Hant: 應用執行環境
+      ja: アプリ実行環境
+      ko: 앱 실행 환경
+      ru: Среда приложения
+      ms: Persekitaran aplikasi
+      pt-br: Ambiente do aplicativo
+    required: false
+    type: select
+    values:
+      - label: local
+        value: local
+      - label: production
+        value: production
+  - default: "true"
+    edit: true
+    envKey: APP_DISABLE_SIGNUP
+    labelEn: Disable signup
+    labelZh: 禁用注册
+    label:
+      en: Disable signup
+      zh: 禁用注册
+      zh-Hant: 停用註冊
+      ja: サインアップを無効化
+      ko: 가입 비활성화
+      ru: Отключить регистрацию
+      ms: Lumpuhkan pendaftaran
+      pt-br: Desativar cadastro
+    required: false
+    type: select
+    values:
+      - label: "true"
+        value: "true"
+      - label: "false"
+        value: "false"
+  - default: ./data/db
+    edit: true
+    envKey: DB_DATA_PATH
+    labelEn: Database data path
+    labelZh: 数据库数据目录
+    label:
+      en: Database data path
+      zh: 数据库数据目录
+      zh-Hant: 資料庫資料目錄
+      ja: データベースデータディレクトリ
+      ko: 데이터베이스 데이터 디렉터리
+      ru: Каталог данных базы
+      ms: Laluan data pangkalan data
+      pt-br: Caminho de dados do banco
+    required: true
+    type: text
+  - default: Asia/Shanghai
+    edit: true
+    envKey: TIME_ZONE
+    labelEn: Time zone
+    labelZh: 时区
+    label:
+      en: Time zone
+      zh: 时区
+      zh-Hant: 時區
+      ja: タイムゾーン
+      ko: 시간대
+      ru: Часовой пояс
+      ms: Zon waktu
+      pt-br: Fuso horário
+    required: true
+    type: text
